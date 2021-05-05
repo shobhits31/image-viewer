@@ -117,6 +117,20 @@ class Home extends Component {
       .catch((err) => console.log(err));
   };
 
+  favIconClickHandler = (likeIdx) => {
+    let tempMediaList = this.state.filteredMediaList;
+    tempMediaList.forEach((mediaObj, index) => {
+      if (index === likeIdx) {
+        mediaObj.userLiked ? --mediaObj.likeCount : ++mediaObj.likeCount;
+        mediaObj.likeCount > 1
+          ? (mediaObj.likeStr = "likes")
+          : (mediaObj.likeStr = "like");
+        mediaObj.userLiked = !mediaObj.userLiked;
+      }
+    });
+    this.setState({ filteredMediaList: tempMediaList });
+  };
+
   render() {
     return (
       <div>
@@ -135,7 +149,7 @@ class Home extends Component {
                   <CardHeader
                     avatar={<Avatar variant="circular" src={profilePic} />}
                     title={media.username}
-                    subheader={new Date(media.timestamp)}
+                    subheader={media.timestamp}
                   />
                   <CardContent>
                     <div>
@@ -162,9 +176,13 @@ class Home extends Component {
                       {media.userLiked ? (
                         <FavoriteIcon
                           style={{ color: red[500], fontSize: 30 }}
+                          onClick={() => this.favIconClickHandler(index)}
                         />
                       ) : (
-                        <FavoriteBorderIcon style={{ fontSize: 30 }} />
+                        <FavoriteBorderIcon
+                          style={{ fontSize: 30 }}
+                          onClick={() => this.favIconClickHandler(index)}
+                        />
                       )}
                       <Typography style={{ paddingLeft: 15 }}>
                         {media.likeCount + " " + media.likeStr}
