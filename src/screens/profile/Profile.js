@@ -8,6 +8,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Fab from "@material-ui/core/Fab";
 import EditIcon from "@material-ui/icons/Edit";
+import Modal from "@material-ui/core/Modal";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Input from "@material-ui/core/Input";
+import Button from "@material-ui/core/Button";
 
 const styles = (theme) => ({
   avatar: {
@@ -16,6 +21,18 @@ const styles = (theme) => ({
   },
   editIcon: {
     margin: "10px 0 0 10px",
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  editModalContent: {
+    backgroundColor: "white",
+    width: 200,
+    padding: 25,
+    borderRadius: 4,
+    border: "2px solid #dcd6d6",
   },
 });
 
@@ -33,6 +50,8 @@ class Profile extends Component {
       followers: 93,
       following: 138,
       name: "Shobhit Srivastava",
+      editModalIsopen: false,
+      mediaModalIsopen: false,
     };
   }
 
@@ -127,6 +146,16 @@ class Profile extends Component {
       .catch((err) => console.log(err));
   };
 
+  openEditModalHandler = () => {
+    console.log(this.state.likeCountList);
+    console.log(this.state.commentList);
+    this.setState({ editModalIsopen: !this.state.editModalIsopen });
+  };
+
+  closeEditModalHandler = () => {
+    this.setState({ editModalIsopen: !this.state.editModalIsopen });
+  };
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect to="/" />;
@@ -174,6 +203,7 @@ class Profile extends Component {
                   color="secondary"
                   aria-label="edit"
                   className={classes.editIcon}
+                  onClick={this.openEditModalHandler}
                 >
                   <EditIcon />
                 </Fab>
@@ -181,6 +211,37 @@ class Profile extends Component {
             </div>
           </div>
         </div>
+        <Modal
+          open={this.state.editModalIsopen}
+          onClose={this.closeEditModalHandler}
+          className="edit-name-modal"
+        >
+          <div
+            className={classes.editModalContent}
+            style={{
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              position: "relative",
+            }}
+          >
+            <FormControl className="modal-heading">
+              <Typography variant="h4">Edit</Typography>
+            </FormControl>
+            <br />
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="fullName">Full Name</InputLabel>
+              <Input id="fullName" type="text" />
+            </FormControl>
+            <br />
+            <br />
+            <br />
+            <Button variant="contained" color="primary">
+              UPDATE
+            </Button>
+          </div>
+        </Modal>
       </div>
     );
   }
