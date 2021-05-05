@@ -169,6 +169,22 @@ class Home extends Component {
     });
   };
 
+  myAccountHandler = () => {
+    var likeCountList = [];
+    var commentList = [];
+    this.state.filteredMediaList.forEach((media, i) => {
+      likeCountList.push({
+        count: media.likeCount,
+        likeStr: media.likeStr,
+        userLiked: media.userLiked,
+      });
+      commentList.push(media.comments);
+    });
+    sessionStorage.setItem("likeCountList", JSON.stringify(likeCountList));
+    sessionStorage.setItem("commentList", JSON.stringify(commentList));
+    this.props.history.push("/profile");
+  };
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect to="/" />;
@@ -180,6 +196,7 @@ class Home extends Component {
           showSearchBox={true}
           history={this.props.history}
           searchHandler={this.searchHandler}
+          myAccountHandler={this.myAccountHandler}
         />
         <div className="media-container">
           <Grid

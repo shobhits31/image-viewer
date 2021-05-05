@@ -55,10 +55,6 @@ class Header extends Component {
     this.setState({ openMenu: !this.state.openMenu, anchorEl: null });
   };
 
-  myAccountHandler = () => {
-    this.props.history.push("/profile");
-  };
-
   logoutHandler = () => {
     sessionStorage.removeItem("access-token");
     this.props.history.push("/");
@@ -122,7 +118,7 @@ class Header extends Component {
                 keepMounted
               >
                 {this.props.homePage ? (
-                  <StyledMenuItem onClick={this.myAccountHandler}>
+                  <StyledMenuItem onClick={this.props.myAccountHandler}>
                     <Typography>My Account</Typography>
                   </StyledMenuItem>
                 ) : (
