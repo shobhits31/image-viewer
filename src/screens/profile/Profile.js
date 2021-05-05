@@ -13,6 +13,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 const styles = (theme) => ({
   avatar: {
@@ -52,6 +53,8 @@ class Profile extends Component {
       name: "Shobhit Srivastava",
       editModalIsopen: false,
       mediaModalIsopen: false,
+      fullName: "",
+      fullNameRequired: "dispNone",
     };
   }
 
@@ -153,9 +156,30 @@ class Profile extends Component {
   };
 
   closeEditModalHandler = () => {
-    this.setState({ editModalIsopen: !this.state.editModalIsopen });
+    this.setState({
+      editModalIsopen: !this.state.editModalIsopen,
+      fullName: "",
+    });
   };
 
+  inputFullNameChangeHandler = (event) => {
+    this.setState({ fullName: event.target.value });
+  };
+
+  updateHandler = () => {
+    if (this.state.fullName === "") {
+      this.setState({ fullNameRequired: "dispBlock" });
+      return;
+    } else {
+      this.setState({ fullNameRequired: "dispNone" });
+    }
+
+    this.setState({
+      editModalIsopen: !this.state.editModalIsopen,
+      name: this.state.fullName,
+      fullName: "",
+    });
+  };
   render() {
     if (!this.state.loggedIn) {
       return <Redirect to="/" />;
@@ -232,12 +256,23 @@ class Profile extends Component {
             <br />
             <FormControl required>
               <InputLabel htmlFor="fullName">Full Name</InputLabel>
-              <Input id="fullName" type="text" />
+              <Input
+                id="fullName"
+                type="text"
+                onChange={this.inputFullNameChangeHandler}
+              />
+              <FormHelperText className={this.state.fullNameRequired}>
+                <span className="required">required</span>
+              </FormHelperText>
             </FormControl>
             <br />
             <br />
             <br />
-            <Button variant="contained" color="primary">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.updateHandler}
+            >
               UPDATE
             </Button>
           </div>
