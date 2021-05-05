@@ -26,6 +26,7 @@ class Home extends Component {
       accessToken: sessionStorage.getItem("access-token"),
       mediaList: [],
       filteredMediaList: [],
+      searchText: "",
     };
   }
 
@@ -147,13 +148,39 @@ class Home extends Component {
     this.setState({ filteredMediaList: tempMediaList });
   };
 
+  searchHandler = (e) => {
+    this.setState({ searchText: e.target.value }, () => {
+      console.log("entered : " + this.state.searchText);
+      if (!this.state.searchText || this.state.searchText.trim() === "") {
+        this.setState({ filteredMediaList: this.state.mediaList });
+      } else {
+        let filteredMedia = this.state.mediaList.filter((media) => {
+          if (media.caption) {
+            return (
+              media.caption
+                .toUpperCase()
+                .indexOf(this.state.searchText.toUpperCase()) > -1
+            );
+          }
+          return false;
+        });
+        this.setState({ filteredMediaList: filteredMedia });
+      }
+    });
+  };
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect to="/" />;
     }
     return (
       <div>
-        <Header loggedIn={this.state.loggedIn} showSearchBox={true} />
+        <Header
+          loggedIn={this.state.loggedIn}
+          showSearchBox={true}
+          history={this.props.history}
+          searchHandler={this.searchHandler}
+        />
         <div className="media-container">
           <Grid
             alignContent="center"
