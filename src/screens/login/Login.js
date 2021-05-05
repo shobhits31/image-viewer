@@ -8,8 +8,45 @@ import Typography from "@material-ui/core/Typography";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 class Login extends Component {
+  constructor() {
+    super();
+    this.state = {
+      username: "",
+      password: "",
+      credentials: {
+        username: "admin",
+        password: "admin",
+      },
+      accessToken:
+        "IGQVJYaEViM3ZAWUHZARaG9aNWZAUMFZAjeU9fUTRyYi1veXlhaFpNVHA5STRjT2VQZAm1GTlZAqWTNKUnhycmJWVWRGOE9WVC1UalBFMjhmWjFCX3N4Vnd3ZAWJVZA3RBY09zWHJoODlrQU1VbWlZAR09WX1JBMAZDZD",
+      incorrectCredential: "dispNone",
+    };
+  }
+
+  inputUsernameChangeHandler = (event) => {
+    this.setState({ username: event.target.value });
+  };
+
+  inputPasswordChangeHandler = (event) => {
+    this.setState({ password: event.target.value });
+  };
+
+  loginHandler = () => {
+    if (
+      this.state.username === this.state.credentials.username &&
+      this.state.password === this.state.credentials.password
+    ) {
+      this.setState({ incorrectCredential: "dispNone" });
+      sessionStorage.setItem("access-token", this.state.accessToken);
+      console.log(this.props);
+      this.props.history.push("/home");
+    } else {
+      this.setState({ incorrectCredential: "dispBlock" });
+    }
+  };
   render() {
     return (
       <div>
@@ -24,21 +61,37 @@ class Login extends Component {
               <br />
               <FormControl required className="login-form-control">
                 <InputLabel htmlFor="username">Username</InputLabel>
-                <Input id="username" type="text" />
+                <Input
+                  id="username"
+                  type="text"
+                  onChange={this.inputUsernameChangeHandler}
+                />
               </FormControl>
               <br />
               <br />
               <FormControl required className="login-form-control">
                 <InputLabel htmlFor="password">Password</InputLabel>
-                <Input id="password" type="text" />
+                <Input
+                  id="password"
+                  type="password"
+                  onChange={this.inputPasswordChangeHandler}
+                />
               </FormControl>
               <br />
               <br />
-              <FormControl>
-                <Button variant="contained" color="primary">
-                  Login
-                </Button>
-              </FormControl>
+              <FormHelperText className={this.state.incorrectCredential}>
+                <span className="credential-required">
+                  Incorrect username and/or password
+                </span>
+              </FormHelperText>
+              <br />
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={this.loginHandler}
+              >
+                LOGIN
+              </Button>
             </CardContent>
           </Card>
         </div>
