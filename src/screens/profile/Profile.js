@@ -14,6 +14,12 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import Divider from "@material-ui/core/Divider";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import { red } from "@material-ui/core/colors";
 
 const styles = (theme) => ({
   avatar: {
@@ -234,6 +240,15 @@ class Profile extends Component {
               </Typography>
             </div>
           </div>
+        </div>
+        <div className="image-section">
+          <GridList cols={3} cellHeight={450}>
+            {this.state.mediaList.map((media) => (
+              <GridListTile key={"grid_" + media.id}>
+                <img src={media.media_url} alt={media.caption} />
+              </GridListTile>
+            ))}
+          </GridList>
         </div>
         <Modal
           open={this.state.editModalIsopen}
