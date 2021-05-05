@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import ImageViewerController from "./screens/ImageViewerController";
+import ImageViewerController from "./screens/ImageViewController";
 
 ReactDOM.render(
   // <span>

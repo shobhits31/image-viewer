@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Login from "./login/Login";
 
-class ImageViewerController extends Component {
+class ImageViewController extends Component {
   render() {
     return (
       <Router>
@@ -14,4 +14,4 @@ class ImageViewerController extends Component {
   }
 }
 
-export default ImageViewerController;
+export default ImageViewController;
