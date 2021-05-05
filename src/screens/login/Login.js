@@ -16,6 +16,8 @@ class Login extends Component {
     this.state = {
       username: "",
       password: "",
+      usernameRequired: "dispNone",
+      passwordRequired: "dispNone",
       credentials: {
         username: "admin",
         password: "admin",
@@ -35,16 +37,29 @@ class Login extends Component {
   };
 
   loginHandler = () => {
+    this.state.username === ""
+      ? this.setState({ usernameRequired: "dispBlock" })
+      : this.setState({ usernameRequired: "dispNone" });
+    this.state.password === ""
+      ? this.setState({ passwordRequired: "dispBlock" })
+      : this.setState({ passwordRequired: "dispNone" });
+    if (this.state.username === "" || this.state.password === "") {
+      return;
+    }
     if (
       this.state.username === this.state.credentials.username &&
       this.state.password === this.state.credentials.password
     ) {
-      this.setState({ incorrectCredential: "dispNone" });
+      this.setState({
+        incorrectCredential: "dispNone",
+      });
       sessionStorage.setItem("access-token", this.state.accessToken);
       console.log(this.props);
       this.props.history.push("/home");
     } else {
-      this.setState({ incorrectCredential: "dispBlock" });
+      this.setState({
+        incorrectCredential: "dispBlock",
+      });
     }
   };
   render() {
@@ -66,6 +81,9 @@ class Login extends Component {
                   type="text"
                   onChange={this.inputUsernameChangeHandler}
                 />
+                <FormHelperText className={this.state.usernameRequired}>
+                  <span className="credential-required">required</span>
+                </FormHelperText>
               </FormControl>
               <br />
               <br />
@@ -76,6 +94,9 @@ class Login extends Component {
                   type="password"
                   onChange={this.inputPasswordChangeHandler}
                 />
+                <FormHelperText className={this.state.passwordRequired}>
+                  <span className="credential-required">required</span>
+                </FormHelperText>
               </FormControl>
               <br />
               <br />
