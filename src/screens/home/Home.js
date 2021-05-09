@@ -194,7 +194,7 @@ class Home extends Component {
       <div>
         <Header
           loggedIn={this.state.loggedIn}
-          showSearchBox={true}
+          homePage={true}
           history={this.props.history}
           searchHandler={this.searchHandler}
           myAccountHandler={this.myAccountHandler}

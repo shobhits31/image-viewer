@@ -169,8 +169,6 @@ class Profile extends Component {
   };
 
   openEditModalHandler = () => {
-    console.log(this.state.likeCountList);
-    console.log(this.state.commentList);
     this.setState({ editModalIsopen: !this.state.editModalIsopen });
   };
 
@@ -313,8 +311,15 @@ class Profile extends Component {
         <div className="image-section">
           <GridList cols={3} cellHeight={450}>
             {this.state.mediaList.map((media) => (
-              <GridListTile key={"grid_" + media.id}>
-                <img src={media.media_url} alt={media.caption} />
+              <GridListTile
+                key={"grid_" + media.id}
+                onClick={() => this.openMediaModalHandler(media.id)}
+              >
+                <img
+                  src={media.media_url}
+                  alt={media.caption}
+                  style={{ cursor: "pointer" }}
+                />
               </GridListTile>
             ))}
           </GridList>
