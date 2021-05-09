@@ -23,7 +23,6 @@ class Home extends Component {
     super(props);
     this.state = {
       loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
-      accessToken: sessionStorage.getItem("access-token"),
       mediaList: [],
       filteredMediaList: [],
       searchText: "",
@@ -31,7 +30,9 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.fetchImageDetails();
+    if (sessionStorage.getItem("access-token")) {
+      this.fetchImageDetails();
+    }
   }
 
   fetchImageDetails = () => {

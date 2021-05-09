@@ -41,6 +41,15 @@ const styles = (theme) => ({
     borderRadius: 4,
     border: "2px solid #dcd6d6",
   },
+  mediaModalContent: {
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    width: 800,
+    padding: 25,
+    borderRadius: 4,
+    border: "2px solid #dcd6d6",
+  },
 });
 
 class Profile extends Component {
@@ -61,12 +70,17 @@ class Profile extends Component {
       mediaModalIsopen: false,
       fullName: "",
       fullNameRequired: "dispNone",
+      selecetedMedia: {},
+      selectedIndex: null,
+      comment: "",
     };
   }
 
   componentDidMount() {
-    this.fectchUserName();
-    this.fetchImageDetails();
+    if (sessionStorage.getItem("access-token")) {
+      this.fectchUserName();
+      this.fetchImageDetails();
+    }
   }
 
   fectchUserName = () => {
@@ -140,7 +154,6 @@ class Profile extends Component {
                       media.likeStr = that.state.likeCountList[i].likeStr;
                       media.userLiked = that.state.likeCountList[i].userLiked;
                       media.comments = that.state.commentList[i];
-                      media.comment = "";
                     });
                     that.setState({ mediaList: data, filteredMediaList: data });
                   },
@@ -186,6 +199,40 @@ class Profile extends Component {
       fullName: "",
     });
   };
+
+  openMediaModalHandler = (mediaId) => {
+    var idx = 0;
+    var media = this.state.mediaDetailList.filter((media, index) => {
+      if (media.id === mediaId) {
+        idx = index;
+        return true;
+      }
+      return false;
+    })[0];
+    var hashtags = media.caption
+      .split(" ")
+      .filter((str) => str.startsWith("#"))
+      .join(" ");
+    media.caption = media.caption.replace(
+      /(^|\s)#[a-zA-Z0-9][^\\p{L}\\p{N}\\p{P}\\p{Z}][\w-]*\b/g,
+      ""
+    );
+
+    this.setState({
+      mediaModalIsopen: !this.state.mediaModalIsopen,
+      selecetedMedia: media,
+      selectedIndex: idx,
+      selectedHashTags: hashtags,
+    });
+    console.log(this.state.commentList[idx].length);
+  };
+
+  closeMediaModalHandler = () => {
+    this.setState({
+      mediaModalIsopen: !this.state.mediaModalIsopen,
+    });
+  };
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect to="/" />;
@@ -253,7 +300,7 @@ class Profile extends Component {
         <Modal
           open={this.state.editModalIsopen}
           onClose={this.closeEditModalHandler}
-          className="edit-name-modal"
+          className="modal"
         >
           <div
             className={classes.editModalContent}
@@ -290,6 +337,108 @@ class Profile extends Component {
             >
               UPDATE
             </Button>
+          </div>
+        </Modal>
+        <Modal
+          open={this.state.mediaModalIsopen}
+          onClose={this.closeMediaModalHandler}
+          className={classes.modal}
+        >
+          <div
+            className={classes.mediaModalContent}
+            style={{
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              position: "relative",
+            }}
+          >
+            <div className="image-modal-left">
+              <img
+                src={this.state.selecetedMedia.media_url}
+                alt={this.state.selecetedMedia.media_url}
+                className="modal-media-img"
+              />
+            </div>
+            <div className="image-modal-right">
+              <div className="media-header">
+                <Avatar
+                  variant="circular"
+                  alt="Profile Picture"
+                  src={profilePic}
+                ></Avatar>
+                <Typography variant="h4" style={{ paddingLeft: "10px" }}>
+                  {this.state.selecetedMedia.username}
+                </Typography>
+              </div>
+              <div className="media-dtl-divider">
+                <Divider variant="fullWidth" />
+              </div>
+              <div className="media-caption">
+                <Typography style={{ fontSize: "14px" }}>
+                  {this.state.selecetedMedia.trimmedCaption}
+                </Typography>
+                <Typography style={{ fontSize: "14px", color: "#0ab7ff" }}>
+                  {this.state.selecetedMedia.hashtags}
+                </Typography>
+              </div>
+              <div className="modal-comment-section">
+                {this.state.selecetedMedia.comments &&
+                this.state.selecetedMedia.comments.length > 0
+                  ? this.state.selecetedMedia.comments.map((comment, i) => (
+                      <p
+                        key={"comment_" + this.state.selectedIndex + "_" + i}
+                        style={{ margin: "0 0 6px 0" }}
+                      >
+                        <b>{this.state.selecetedMedia.username}:</b>{" "}
+                        {comment.commentStr}
+                      </p>
+                    ))
+                  : ""}
+              </div>
+              <div className="modal-media-icon-section">
+                {this.state.selecetedMedia.userLiked ? (
+                  <FavoriteIcon
+                    fontSize="default"
+                    style={{ color: red[500], fontSize: 30 }}
+                    onClick={() => this.favIconClickHandler()}
+                  />
+                ) : (
+                  <FavoriteBorderIcon
+                    style={{ fontSize: 30 }}
+                    onClick={() => this.favIconClickHandler()}
+                  />
+                )}
+                <Typography style={{ paddingLeft: 15, fontSize: 14 }}>
+                  {this.state.selecetedMedia.likeCount +
+                    " " +
+                    this.state.selecetedMedia.likeStr}
+                </Typography>
+              </div>
+              <div>
+                <FormControl
+                  style={{ marginRight: 10 }}
+                  className="modal-comment-form-control"
+                >
+                  <InputLabel htmlFor="comment">Add a comment</InputLabel>
+                  <Input
+                    id="comment"
+                    type="text"
+                    value={this.state.comment}
+                    onChange={this.inputCommentChangeHandler}
+                  />
+                </FormControl>
+                <FormControl style={{ verticalAlign: "bottom" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.addCommentHandler}
+                  >
+                    ADD
+                  </Button>
+                </FormControl>
+              </div>
+            </div>
           </div>
         </Modal>
       </div>
