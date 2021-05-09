@@ -23,7 +23,6 @@ class Home extends Component {
     super(props);
     this.state = {
       loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
-      accessToken: sessionStorage.getItem("access-token"),
       mediaList: [],
       filteredMediaList: [],
       searchText: "",
@@ -31,7 +30,9 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.fetchImageDetails();
+    if (sessionStorage.getItem("access-token")) {
+      this.fetchImageDetails();
+    }
   }
 
   fetchImageDetails = () => {
@@ -169,6 +170,22 @@ class Home extends Component {
     });
   };
 
+  myAccountHandler = () => {
+    var likeCountList = [];
+    var commentList = [];
+    this.state.filteredMediaList.forEach((media, i) => {
+      likeCountList.push({
+        count: media.likeCount,
+        likeStr: media.likeStr,
+        userLiked: media.userLiked,
+      });
+      commentList.push(media.comments);
+    });
+    sessionStorage.setItem("likeCountList", JSON.stringify(likeCountList));
+    sessionStorage.setItem("commentList", JSON.stringify(commentList));
+    this.props.history.push("/profile");
+  };
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect to="/" />;
@@ -177,9 +194,10 @@ class Home extends Component {
       <div>
         <Header
           loggedIn={this.state.loggedIn}
-          showSearchBox={true}
+          homePage={true}
           history={this.props.history}
           searchHandler={this.searchHandler}
+          myAccountHandler={this.myAccountHandler}
         />
         <div className="media-container">
           <Grid

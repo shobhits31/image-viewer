@@ -55,33 +55,47 @@ class Header extends Component {
     this.setState({ openMenu: !this.state.openMenu, anchorEl: null });
   };
 
-  myAccountHandler = () => {
-    this.props.history.push("/profile");
-  };
-
   logoutHandler = () => {
     sessionStorage.removeItem("access-token");
     this.props.history.push("/");
+  };
+
+  logoHandler = () => {
+    this.props.history.push("/home");
   };
 
   render() {
     return (
       <div>
         <header className="app-header">
-          <span className="app-logo">Image Viewer</span>
+          {this.props.loggedIn &&
+          this.props.history.location.pathname === "/profile" ? (
+            <div onClick={this.logoHandler} className="app-logo-clickable">
+              <span className="app-logo">Image Viewer</span>
+            </div>
+          ) : (
+            <div>
+              <span className="app-logo">Image Viewer</span>
+            </div>
+          )}
           {this.props.loggedIn ? (
             <div className="app-header-right">
-              <Input
-                type="search"
-                placeholder="Search…"
-                disableUnderline
-                className="search-box"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <SearchIcon className="search-icon" />
-                  </InputAdornment>
-                }
-              />
+              {this.props.homePage ? (
+                <Input
+                  type="search"
+                  placeholder="Search…"
+                  disableUnderline
+                  className="search-box"
+                  startAdornment={
+                    <InputAdornment position="start" className="search-icon">
+                      <SearchIcon />
+                    </InputAdornment>
+                  }
+                  onChange={this.props.searchHandler}
+                />
+              ) : (
+                ""
+              )}
               <IconButton
                 aria-controls="simple-menu"
                 aria-haspopup="true"
@@ -92,6 +106,7 @@ class Header extends Component {
                   variant="circular"
                   alt={profilePic}
                   src={profilePic}
+                  style={{ border: "1px solid white" }}
                 ></Avatar>
               </IconButton>
               <StyledMenu
@@ -103,10 +118,14 @@ class Header extends Component {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 keepMounted
               >
-                <StyledMenuItem onClick={this.myAccountHandler}>
-                  <Typography>My Account</Typography>
-                </StyledMenuItem>
-                <Divider variant="fullWidth" />
+                {this.props.homePage ? (
+                  <StyledMenuItem onClick={this.props.myAccountHandler}>
+                    <Typography>My Account</Typography>
+                  </StyledMenuItem>
+                ) : (
+                  ""
+                )}
+                {this.props.homePage ? <Divider variant="middle" /> : ""}
                 <StyledMenuItem onClick={this.logoutHandler}>
                   <Typography>Logout</Typography>
                 </StyledMenuItem>

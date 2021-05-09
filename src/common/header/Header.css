@@ -32,3 +32,11 @@
 .profile-icon {
   padding: 0 10px;
 }
+
+.app-logo-clickable {
+  cursor: pointer;
+}
+
+.search-box > .MuiInputBase-input {
+  padding-top: 14px;
+}
