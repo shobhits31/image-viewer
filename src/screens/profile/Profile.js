@@ -202,35 +202,57 @@ class Profile extends Component {
 
   openMediaModalHandler = (mediaId) => {
     var idx = 0;
-    var media = this.state.mediaDetailList.filter((media, index) => {
+    var media = this.state.mediaList.filter((media, index) => {
       if (media.id === mediaId) {
         idx = index;
         return true;
       }
       return false;
     })[0];
-    var hashtags = media.caption
-      .split(" ")
-      .filter((str) => str.startsWith("#"))
-      .join(" ");
-    media.caption = media.caption.replace(
-      /(^|\s)#[a-zA-Z0-9][^\\p{L}\\p{N}\\p{P}\\p{Z}][\w-]*\b/g,
-      ""
-    );
-
     this.setState({
       mediaModalIsopen: !this.state.mediaModalIsopen,
       selecetedMedia: media,
       selectedIndex: idx,
-      selectedHashTags: hashtags,
     });
-    console.log(this.state.commentList[idx].length);
   };
 
   closeMediaModalHandler = () => {
     this.setState({
       mediaModalIsopen: !this.state.mediaModalIsopen,
     });
+  };
+
+  favIconClickHandler = () => {
+    let tempMediaList = this.state.mediaList;
+    tempMediaList[this.state.selectedIndex].userLiked
+      ? --tempMediaList[this.state.selectedIndex].likeCount
+      : ++tempMediaList[this.state.selectedIndex].likeCount;
+    tempMediaList[this.state.selectedIndex].likeCount > 1
+      ? (tempMediaList[this.state.selectedIndex].likeStr = "likes")
+      : (tempMediaList[this.state.selectedIndex].likeStr = "like");
+    tempMediaList[this.state.selectedIndex].userLiked = !tempMediaList[
+      this.state.selectedIndex
+    ].userLiked;
+    this.setState({ mediaList: tempMediaList });
+  };
+
+  inputCommentChangeHandler = (e) => {
+    this.setState({ comment: e.target.value });
+  };
+
+  addCommentHandler = () => {
+    if (this.state.comment) {
+      let tempMediaList = this.state.mediaList;
+      let tempComments = tempMediaList[this.state.selectedIndex].comments;
+      tempComments.push({ commentStr: this.state.comment });
+      tempMediaList[this.state.selectedIndex].comments = tempComments;
+      tempMediaList[this.state.selectedIndex].comment = "";
+      this.setState({
+        mediaList: tempMediaList,
+        comment: "",
+      });
+    }
+    document.getElementById("comment").value = "";
   };
 
   render() {

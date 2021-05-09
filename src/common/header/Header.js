@@ -87,7 +87,7 @@ class Header extends Component {
                   disableUnderline
                   className="search-box"
                   startAdornment={
-                    <InputAdornment position="start">
+                    <InputAdornment position="start" className="search-icon">
                       <SearchIcon />
                     </InputAdornment>
                   }
