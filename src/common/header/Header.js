@@ -106,6 +106,7 @@ class Header extends Component {
                   variant="circular"
                   alt={profilePic}
                   src={profilePic}
+                  style={{ border: "1px solid white" }}
                 ></Avatar>
               </IconButton>
               <StyledMenu
